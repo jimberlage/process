@@ -42,7 +42,8 @@
        ~channels-binding)))
 
 (defmacro process
-  "Runs the given function with :in, :out, and :err channels.
+  "Runs the given statements with :in, :out, and :err channels.
+  Will swallow any errors raised and send them on the :err channel.
 
   You can run it like this:
   (process channels (do-some-work channels))
