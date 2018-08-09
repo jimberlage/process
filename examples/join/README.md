@@ -1,36 +1,23 @@
 # join
 
-FIXME: description
+A bad clone of the unix [join](https://linux.die.net/man/1/join) utility.
 
-## Installation
-
-Download from http://example.com/FIXME.
-
-## Usage
-
-FIXME: explanation
-
-    $ java -jar join-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
+Provided to give a look at how you might use this library on the JVM.
 
 ## Examples
 
-...
+```
+$ lein run resources/a1.txt resources/a2.txt
+251308 30000 Preeti
+251311 25000 Joseph
+251315 10000 Abishek
+251321 12255 Ankita
+```
 
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2018 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+```
+$ cat resources/a1.txt | lein run resources/a2.txt
+251308 30000 Preeti
+251311 25000 Joseph
+251315 10000 Abishek
+251321 12255 Ankita
+```
