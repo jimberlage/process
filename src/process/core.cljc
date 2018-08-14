@@ -1,6 +1,7 @@
 (ns process.core
   (:require #?(:clj  [clojure.core.async :as async :refer [<! >!]]
-               :cljs [cljs.core.async :as async :refer [<! >!] :include-macros true])))
+               :cljs [cljs.core.async :as async :refer [<! >!] :include-macros true])
+            [clojure.set :as set]))
 
 (def default-buffer-size 1000)
 
@@ -14,8 +15,8 @@
       (async/close! (get channels channel-name)))
     channels))
 
-(defn close-outputs [channels]
-  (doseq [channel-name [:out :err]]
+(defn close-outputs [opts channels]
+  (doseq [channel-name (set/difference #{:out :err} (get opts :close-manually #{}))]
     (async/close! (get channels channel-name))))
 
 (defn- parse-opts
@@ -36,9 +37,10 @@
            (catch ~(if cljs? :default `Throwable) error#
              (~(if cljs? 'cljs.core.async/>! 'clojure.core.async/>!)
                (:err ~channels-binding)
-               error#))
+               error#)
+             (close-outputs {} ~channels-binding))
            (finally
-             (close-outputs ~channels-binding))))
+             (close-outputs ~opts ~channels-binding))))
        ~channels-binding)))
 
 (defmacro process
@@ -63,7 +65,16 @@
     channels
     {:buffer-size {:out 1}}
     (do-some-work channels))
-  will create the :out channel with (async/chan 1)."
+  will create the :out channel with (async/chan 1).
+
+  If you need to handle closing certain channels yourself, specify the :close-manually option.
+
+  For example,
+  (process
+    channels
+    {:close-manually #{:err}}
+    (do-some-work channels))
+  will not close the error channel."
   [channels-binding & body]
   (let [[opts body] (parse-opts body)]
     (process* &env opts channels-binding body)))
