@@ -15,9 +15,12 @@
       (async/close! (get channels channel-name)))
     channels))
 
-(defn close-outputs [opts channels]
-  (doseq [channel-name (set/difference #{:out :err} (get opts :close-manually #{}))]
-    (async/close! (get channels channel-name))))
+(defn close-outputs
+  ([channels]
+   (close-outputs {} channels))
+  ([opts channels]
+   (doseq [channel-name (set/difference #{:out :err} (get opts :close-manually #{}))]
+     (async/close! (get channels channel-name)))))
 
 (defn- parse-opts
   "Gets an optional map from the body passed into a macro."

@@ -1,4 +1,4 @@
-(defproject process "0.1.1"
+(defproject process "0.1.2"
   :description "A library for running code like a Unix process, with attached input, output, and error streams."
   :url "https://github.com/jimberlage/process"
   :license {:name "MIT"
